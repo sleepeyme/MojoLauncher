@@ -1,70 +1,87 @@
 name: Bug report
-description: ' Create a report to help us improve '
+description: "Create a report to help us improve Mojo Launcher"
 title: "[BUG] <Short description>"
 labels: [bug]
 body:
-- type: textarea
-  id: version
-  attributes:
-    label: Describe the bug
-    description: >-
-      A clear and concise description of what the bug is.
-    placeholder: 'Example: I have to press CTRL for keyboard keys to work on my Keychron K2 keyboard when connected via Bluetooth'
-  validations:
-    required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: >
+        A clear and concise description of what the bug is.
+      placeholder: >
+        Example: I have to press CTRL for keyboard keys to work on my Keychron K2 keyboard when connected via Bluetooth.
+    validations:
+      required: true
 
-- type: textarea
-  attributes:
-    label: The log file and images/videos
-    description: |
-      The log file called `latestlog.txt` is located under `/storage/emulated/0/Android/data/net.kdt.pojavlaunch/files` (on Android 10 and higher) or `/storage/emulated/0/games/PojavLauncher/` (on Android 9 and lower). You may have to activate an option in your file explorer to see hidden files and folders. Recommended file managers are ZArchiver and MiXplorer. |
-      You can also upload here screenshots or videos of the buggy behavior, if possible.
-      
-      Tip: You can attach files by clicking this area to highlight it and then dragging files in or select them on 🖼 option at the toolbar. Do not click anything before the file successfully uploads, otherwise the upload is going to stop and the file won't attach.
-  validations:
-    required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, Screenshots, or Videos
+      description: |
+        Please attach your `latestlog.txt` file, which is located in one of the following paths:
 
-- type: textarea
-  attributes:
-    label: Steps To Reproduce
-    description: Steps to reproduce the issue.
-    placeholder: |
-      1. Start PojavLauncher
-      ... *(your set of actions to reproduce the bug)*
-    render: markdown
-  validations:
-    required: true
+        - `/storage/emulated/0/Android/data/net.kdt.pojavlaunch/files` (Android 10+)
+        - `/storage/emulated/0/games/PojavLauncher/` (Android 9 or lower)
 
-- type: textarea
-  attributes:
-    label: Expected Behavior
-    description: A concise description of what you expected to happen.
-    placeholder: 'Example: I expect my keyboard to work correctly without having to hold CTRL.'
-  validations:
-    required: true
+        Make sure hidden files are visible in your file manager. Recommended file explorers are **ZArchiver** or **MiXplorer**.
 
-- type: textarea
-  attributes:
-    label: Platform
-    description: |
-      Examples:
-        - **Device model**: Huawei P30 Pro 8/512G
-        - **CPU architecture**: arm64 (can be arm64, arm, x86_64 or x86 depending on the device)
-        - **Android version**: 10
-        - **PojavLauncher version**: (can be found in Android Apps settings, for example `dahlia-20230813-5e8842b-v3_openjdk`)
-    value: |
-        - Device model: 
-        - CPU architecture: 
-        - Android version: 
-        - PojavLauncher version: 
-    render: markdown
-  validations:
-    required: true
+        You can also drag and drop screenshots or video recordings here.
 
-- type: textarea
-  attributes:
-    label: Anything else?
-    description: |
-      Add any other context about the problem here.
-  validations:
-    required: false
+        ⚠️ Don't click away while uploading — let it finish first.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps To Reproduce
+      description: What steps should we follow to reproduce the issue?
+      placeholder: |
+        1. Open Mojo Launcher
+        2. Start Minecraft Java
+        3. Connect Bluetooth keyboard
+        4. Keys only work when holding CTRL
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen instead?
+      placeholder: >
+        Example: I expected my keyboard to work without holding CTRL.
+    validations:
+      required: true
+
+  - type: textarea
+    id: platform
+    attributes:
+      label: Device and Platform Info
+      description: |
+        Please provide your full device and version details.
+
+        Example:
+          - **Device model**: POCO X3 Pro
+          - **CPU architecture**: arm64-v8a
+          - **Android version**: 13
+          - **Mojo Launcher version**: alpha-20250714-dbg
+      value: |
+          - Device model: 
+          - CPU architecture: 
+          - Android version: 
+          - Mojo Launcher version: 
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: Anything else?
+      description: |
+        Any other context, logs, debug commands, or side effects you noticed?
+    validations:
+      required: false
