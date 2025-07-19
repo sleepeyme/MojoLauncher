@@ -7,20 +7,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     env:
       UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
       CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 8
+      - name: Set up Java 8 (for older compatibility)
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '8'
+          distribution: temurin
+          java-version: 8
 
-      - name: Get LTW
+      - name: Download LTW Artifact
         uses: dawidd6/action-download-artifact@v2
         continue-on-error: true
         with:
@@ -30,60 +32,62 @@ jobs:
           name: output-aar
           path: app_pojavlauncher/libs
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.11"
+          gradle-version: 8.11
 
-      - name: Set up JDK 17
+      - name: Switch to Java 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Create out directory
-        run: mkdir out
-      - name: Build Publishing .aab
+          distribution: temurin
+          java-version: 17
+
+      - name: Create output directory
+        run: mkdir -p out
+
+      - name: Build Release AAB (Google Play)
         if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'v3_openjdk'
         run: |
           gradle :app_pojavlauncher:bundleFullGplay
           mv app_pojavlauncher/build/outputs/bundle/fullGplay/app_pojavlauncher-full-gplay.aab out/app-gplay.aab
 
-      - name: Build Debug .apk
+      - name: Build Debug APK (Full)
         run: |
-          # Build the launcher
           gradle :app_pojavlauncher:assembleFullDebug
           mv app_pojavlauncher/build/outputs/apk/full/debug/app_pojavlauncher-full-debug.apk out/app-debug-full.apk
 
-      - name: Build Debug .apk (No runtime)
+      - name: Build Debug APK (No Runtime)
         run: |
           gradle :app_pojavlauncher:assembleNoruntimeDebug
           mv app_pojavlauncher/build/outputs/apk/noruntime/debug/app_pojavlauncher-noruntime-debug.apk out/app-debug-noruntime.apk
 
-      - name: Gen md5sums
+      - name: Generate MD5 checksums
         run: |
           md5sum out/app-debug-full.apk > out/app-debug-full.md5
           md5sum out/app-debug-noruntime.apk > out/app-debug-noruntime.md5
 
-      - name: Upload Debug APK
+      - name: Upload Full Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: out/app-debug-full.apk
 
-      - name: Upload Debug APK (No runtime)
+      - name: Upload Debug APK (No Runtime)
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-noruntime
           path: out/app-debug-noruntime.apk
 
-      - name: Upload AAB
+      - name: Upload AAB for Release
         uses: actions/upload-artifact@v4
         with:
           name: app-release-aab
           path: out/app-gplay.aab
 
-      - name: Upload onto the Google Play testing track
-        continue-on-error: true
+      - name: Upload to Google Play Internal Testing
         if: github.repository_owner == 'MojoLauncher' && github.ref_name == 'v3_openjdk'
+        continue-on-error: true
         uses: r0adkll/upload-google-play@v1.1.2
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_JSON }}
